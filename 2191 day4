@@ -1,4 +1,4 @@
-Topic: Sort the jumbled numbers.
+2191: Sort the jumbled numbers.
 You are given a 0-indexed integer array mapping which represents the mapping rule of a shuffled decimal system. mapping[i] = j means digit i should be mapped to digit j in this system.
 
 The mapped value of an integer is the new integer obtained by replacing each occurrence of digit i in the integer with mapping[i] for all 0 <= i <= 9.
