@@ -42,3 +42,64 @@ edges[i].length == 3
 0 <= fromi < toi < n
 1 <= weighti, distanceThreshold <= 10^4
 All pairs (fromi, toi) are distinct.
+
+
+
+Code:
+public class Solution {
+    public int findTheCity(int n, int[][] edges, int distanceThreshold) {
+        int[][] dist = new int[n][n];
+        
+        // Initialize distance matrix with a large value, except for the diagonal
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    dist[i][j] = 0;
+                } else {
+                    dist[i][j] = 100000000; // A large number instead of Integer.MAX_VALUE
+                }
+            }
+        }
+        
+        // Populate initial distances based on the edges
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            int weight = edge[2];
+            dist[u][v] = weight;
+            dist[v][u] = weight;
+        }
+        
+        // Floyd-Warshall algorithm
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                    }
+                }
+            }
+        }
+        
+        // Find the city with the smallest number of reachable cities within the distance threshold
+        int minReachable = n;
+        int resultCity = -1;
+        
+        for (int i = 0; i < n; i++) {
+            int reachableCount = 0;
+            for (int j = 0; j < n; j++) {
+                if (dist[i][j] <= distanceThreshold) {
+                    reachableCount++;
+                }
+            }
+            
+            // If the current city has fewer reachable cities, or same number but with a larger index
+            if (reachableCount <= minReachable) {
+                minReachable = reachableCount;
+                resultCity = i;
+            }
+        }
+        
+        return resultCity;
+    }
+}
