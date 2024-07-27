@@ -43,3 +43,65 @@ original[i] != changed[i]
 
 
 Code
+import java.util.Arrays;
+
+public class Solution {
+    private static final int INF = (int) 1e9; // A large value representing infinity
+
+    public long minimumCost(String source, String target, char[] original, char[] changed, int[] cost) {
+        int n = 26; // There are 26 lowercase English letters
+
+        // Initialize cost matrix with infinity, except the diagonal which should be 0
+        int[][] minCost = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(minCost[i], INF);
+            minCost[i][i] = 0;
+        }
+
+        // Populate the minCost matrix with the given transformation costs
+        for (int i = 0; i < original.length; i++) {
+            int from = original[i] - 'a';
+            int to = changed[i] - 'a';
+            minCost[from][to] = Math.min(minCost[from][to], cost[i]);
+        }
+
+        // Apply Floyd-Warshall to find the minimum cost to convert every character to every other character
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (minCost[i][k] < INF && minCost[k][j] < INF) {
+                        minCost[i][j] = Math.min(minCost[i][j], minCost[i][k] + minCost[k][j]);
+                    }
+                }
+            }
+        }
+
+        // Calculate the total cost to convert source to target
+        long totalCost = 0;
+        for (int i = 0; i < source.length(); i++) {
+            char sChar = source.charAt(i);
+            char tChar = target.charAt(i);
+            if (sChar != tChar) {
+                int sIndex = sChar - 'a';
+                int tIndex = tChar - 'a';
+                if (minCost[sIndex][tIndex] == INF) {
+                    return -1; // Conversion is impossible
+                }
+                totalCost += minCost[sIndex][tIndex];
+            }
+        }
+
+        return totalCost;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String source = "abcd";
+        String target = "acbe";
+        char[] original = {'a', 'b', 'c', 'c', 'e', 'd'};
+        char[] changed = {'b', 'c', 'b', 'e', 'b', 'e'};
+        int[] cost = {2, 5, 5, 1, 2, 20};
+        long result = solution.minimumCost(source, target, original, changed, cost);
+        System.out.println(result); // Expected output: 28
+    }
+}
