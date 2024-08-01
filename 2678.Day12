@@ -63,3 +63,32 @@ public class Solution {
     }
 }
 
+CODE(Runtime 0 ms):
+public class Solution {
+    public int countSeniors(String[] details) {
+        int seniorCount = 0;
+
+        for (String detail : details) {
+            // Parse the age directly from the character array
+            int tens = detail.charAt(11) - '0'; // The 12th character (index 11)
+            int ones = detail.charAt(12) - '0'; // The 13th character (index 12)
+            int age = tens * 10 + ones;
+
+            // Check if the age is greater than 60
+            if (age > 60) {
+                seniorCount++;
+            }
+        }
+
+        return seniorCount;
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        String[] details1 = {"7868190130M7522", "5303914400F9211", "9273338290F4010"};
+        System.out.println(sol.countSeniors(details1)); // Output: 2
+
+        String[] details2 = {"1313579440F2036", "2921522980M5644"};
+        System.out.println(sol.countSeniors(details2)); // Output: 0
+    }
+}
