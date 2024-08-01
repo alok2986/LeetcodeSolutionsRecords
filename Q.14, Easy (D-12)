@@ -24,3 +24,46 @@ Constraints:
 1 <= strs.length <= 200
 0 <= strs[i].length <= 200
 strs[i] consists of only lowercase English letters.
+
+
+CODE: 
+public class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) return "";
+
+        // Start with the first string as the initial prefix
+        String prefix = strs[0];
+
+        // Compare the prefix with each string
+        for (int i = 1; i < strs.length; i++) {
+            // Update prefix to the common prefix with the current string
+            prefix = commonPrefix(prefix, strs[i]);
+
+            // If the common prefix becomes empty, no need to check further
+            if (prefix.isEmpty()) {
+                break;
+            }
+        }
+
+        return prefix;
+    }
+
+    private String commonPrefix(String s1, String s2) {
+        int minLength = Math.min(s1.length(), s2.length());
+        int i = 0;
+        while (i < minLength && s1.charAt(i) == s2.charAt(i)) {
+            i++;
+        }
+        return s1.substring(0, i);
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        String[] strs1 = {"flower", "flow", "flight"};
+        System.out.println(sol.longestCommonPrefix(strs1)); // Output: "fl"
+
+        String[] strs2 = {"dog", "racecar", "car"};
+        System.out.println(sol.longestCommonPrefix(strs2)); // Output: ""
+    }
+}
+
