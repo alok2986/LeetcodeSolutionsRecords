@@ -34,7 +34,8 @@ details[i][10] is either 'M' or 'F' or 'O'.
 The phone numbers and seat numbers of the passengers are distinct.
 
 
-CODE:
+CODE:(Runtime 1 ms)
+
 public class Solution {
     public int countSeniors(String[] details) {
         int seniorCount = 0;
