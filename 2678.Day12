@@ -32,3 +32,33 @@ details[i].length == 15
 details[i] consists of digits from '0' to '9'.
 details[i][10] is either 'M' or 'F' or 'O'.
 The phone numbers and seat numbers of the passengers are distinct.
+
+
+CODE:
+public class Solution {
+    public int countSeniors(String[] details) {
+        int seniorCount = 0;
+
+        for (String detail : details) {
+            // Extract the age part of the string
+            int age = Integer.parseInt(detail.substring(11, 13));
+
+            // Check if the age is greater than 60
+            if (age > 60) {
+                seniorCount++;
+            }
+        }
+
+        return seniorCount;
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        String[] details1 = {"7868190130M7522", "5303914400F9211", "9273338290F4010"};
+        System.out.println(sol.countSeniors(details1)); // Output: 2
+
+        String[] details2 = {"1313579440F2036", "2921522980M5644"};
+        System.out.println(sol.countSeniors(details2)); // Output: 0
+    }
+}
+
