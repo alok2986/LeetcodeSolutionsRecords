@@ -46,3 +46,62 @@ nums[i] is either 0 or 1.
 
 
 CODE: 
+public class Solution {
+    public int minSwaps(int[] nums) {
+        int numOnes = 0;
+        
+        // Step 1: Count the total number of 1's in the array
+        for (int num : nums) {
+            if (num == 1) {
+                numOnes++;
+            }
+        }
+
+        if (numOnes == 0) {
+            return 0; // No 1's to group
+        }
+
+        // Step 2: Create the extended array
+        int n = nums.length;
+        int[] extendedNums = new int[2 * n];
+        System.arraycopy(nums, 0, extendedNums, 0, n);
+        System.arraycopy(nums, 0, extendedNums, n, n);
+
+        // Step 3: Use sliding window to find the minimum swaps
+        int minSwaps = Integer.MAX_VALUE;
+        int currentZeros = 0;
+
+        // Initialize the first window
+        for (int i = 0; i < numOnes; i++) {
+            if (extendedNums[i] == 0) {
+                currentZeros++;
+            }
+        }
+        minSwaps = currentZeros;
+
+        // Slide the window over the extended array
+        for (int i = numOnes; i < 2 * n; i++) {
+            if (extendedNums[i - numOnes] == 0) {
+                currentZeros--;
+            }
+            if (extendedNums[i] == 0) {
+                currentZeros++;
+            }
+            minSwaps = Math.min(minSwaps, currentZeros);
+        }
+
+        return minSwaps;
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        int[] nums1 = {0, 1, 0, 1, 1, 0, 0};
+        System.out.println(sol.minSwaps(nums1)); // Output: 1
+
+        int[] nums2 = {0, 1, 1, 1, 0, 0, 1, 1, 0};
+        System.out.println(sol.minSwaps(nums2)); // Output: 2
+
+        int[] nums3 = {1, 1, 0, 0, 1};
+        System.out.println(sol.minSwaps(nums3)); // Output: 0
+    }
+}
