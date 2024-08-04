@@ -31,3 +31,54 @@ n == nums.length
 1 <= nums.length <= 1000
 1 <= nums[i] <= 100
 1 <= left <= right <= n * (n + 1) / 2
+
+
+CODE:
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int rangeSum(int[] nums, int n, int left, int right) {
+        List<Integer> subarraySums = new ArrayList<>();
+        
+        // Generate all subarray sums
+        for (int i = 0; i < n; i++) {
+            int currentSum = 0;
+            for (int j = i; j < n; j++) {
+                currentSum += nums[j];
+                subarraySums.add(currentSum);
+            }
+        }
+        
+        // Sort the list of subarray sums
+        Collections.sort(subarraySums);
+        
+        // Calculate the sum of elements from index `left` to `right` (1-based)
+        int sum = 0;
+        for (int i = left - 1; i < right; i++) {
+            sum = (sum + subarraySums.get(i)) % MOD;
+        }
+        
+        return sum;
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        
+        // Test cases
+        int[] nums1 = {1, 2, 3, 4};
+        int n1 = 4, left1 = 1, right1 = 5;
+        System.out.println(sol.rangeSum(nums1, n1, left1, right1)); // Output: 13
+
+        int[] nums2 = {1, 2, 3, 4};
+        int n2 = 4, left2 = 3, right2 = 4;
+        System.out.println(sol.rangeSum(nums2, n2, left2, right2)); // Output: 6
+
+        int[] nums3 = {1, 2, 3, 4};
+        int n3 = 4, left3 = 1, right3 = 10;
+        System.out.println(sol.rangeSum(nums3, n3, left3, right3)); // Output: 50
+    }
+}
