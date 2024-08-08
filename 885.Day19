@@ -27,3 +27,38 @@ Constraints:
 1 <= rows, cols <= 100
 0 <= rStart < rows
 0 <= cStart < cols
+
+
+CODE:
+public class Solution {
+    public int[][] spiralMatrixIII(int rows, int cols, int rStart, int cStart) {
+        int[][] result = new int[rows * cols][2];
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}}; // Right, Down, Left, Up
+        int idx = 0;  // Index for filling the result array
+        int totalSteps = 1; // Number of steps in the current direction
+
+        result[idx++] = new int[]{rStart, cStart}; // Starting position
+        
+        while (idx < rows * cols) {
+            for (int[] dir : directions) {
+                for (int i = 0; i < totalSteps; i++) {
+                    rStart += dir[0];
+                    cStart += dir[1];
+                    
+                    if (rStart >= 0 && rStart < rows && cStart >= 0 && cStart < cols) {
+                        result[idx++] = new int[]{rStart, cStart};
+                        if (idx == rows * cols) {
+                            return result;
+                        }
+                    }
+                }
+                // Increase the step count after moving right or left
+                if (dir[0] != 0) {
+                    totalSteps++;
+                }
+            }
+        }
+        
+        return result;
+    }
+}
