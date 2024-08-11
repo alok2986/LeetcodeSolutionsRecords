@@ -32,3 +32,67 @@ m == grid.length
 n == grid[i].length
 1 <= m, n <= 30
 grid[i][j] is either 0 or 1.
+
+
+CODE:
+public class Solution {
+    private int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    
+    public int minDays(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        
+        // If the grid is already disconnected
+        if (!isConnected(grid)) {
+            return 0;
+        }
+        
+        // Try to disconnect by removing one cell
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    grid[i][j] = 0;
+                    if (!isConnected(grid)) {
+                        return 1;
+                    }
+                    grid[i][j] = 1;  // restore the original grid
+                }
+            }
+        }
+        
+        // If it's still connected after trying to remove one cell, return 2
+        return 2;
+    }
+    
+    private boolean isConnected(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        boolean[][] visited = new boolean[m][n];
+        int islands = 0;
+        
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1 && !visited[i][j]) {
+                    islands++;
+                    if (islands > 1) {
+                        return false;  // More than one island
+                    }
+                    dfs(grid, visited, i, j);
+                }
+            }
+        }
+        
+        return islands == 1;
+    }
+    
+    private void dfs(int[][] grid, boolean[][] visited, int x, int y) {
+        int m = grid.length, n = grid[0].length;
+        visited[x][y] = true;
+        
+        for (int[] dir : directions) {
+            int newX = x + dir[0], newY = y + dir[1];
+            if (newX >= 0 && newX < m && newY >= 0 && newY < n && 
+                grid[newX][newY] == 1 && !visited[newX][newY]) {
+                dfs(grid, visited, newX, newY);
+            }
+        }
+    }
+}
