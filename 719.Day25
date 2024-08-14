@@ -32,3 +32,45 @@ n == nums.length
 2 <= n <= 104
 0 <= nums[i] <= 106
 1 <= k <= n * (n - 1) / 2
+
+CODE:
+import java.util.Arrays;
+
+public class Solution {
+    public int smallestDistancePair(int[] nums, int k) {
+        // Sort the array to simplify distance calculation
+        Arrays.sort(nums);
+        
+        // Define the binary search range
+        int left = 0;
+        int right = nums[nums.length - 1] - nums[0];
+        
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            
+            if (countPairs(nums, mid) < k) {
+                left = mid + 1; // Increase the distance because we need more pairs
+            } else {
+                right = mid; // Decrease the distance to find the k-th smallest
+            }
+        }
+        
+        return left;
+    }
+    
+    private int countPairs(int[] nums, int distance) {
+        int count = 0;
+        int left = 0;
+        
+        // Two-pointer technique to count pairs with distance <= `distance`
+        for (int right = 0; right < nums.length; right++) {
+            while (nums[right] - nums[left] > distance) {
+                left++;
+            }
+            count += right - left;
+        }
+        
+        return count;
+    }
+}
+
