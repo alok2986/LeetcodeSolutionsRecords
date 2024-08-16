@@ -29,3 +29,31 @@ m == arrays.length
 -104 <= arrays[i][j] <= 104
 arrays[i] is sorted in ascending order.
 There will be at most 105 integers in all the arrays.
+
+
+CODE:
+import java.util.List;
+
+public class Solution {
+    public int maxDistance(List<List<Integer>> arrays) {
+        int maxDist = 0;
+        int minVal = arrays.get(0).get(0);
+        int maxVal = arrays.get(0).get(arrays.get(0).size() - 1);
+        
+        for (int i = 1; i < arrays.size(); i++) {
+            List<Integer> array = arrays.get(i);
+            int currentMin = array.get(0);
+            int currentMax = array.get(array.size() - 1);
+            
+            // Calculate the distance using the current array and previously recorded min/max
+            maxDist = Math.max(maxDist, Math.abs(currentMax - minVal));
+            maxDist = Math.max(maxDist, Math.abs(maxVal - currentMin));
+            
+            // Update the global min and max
+            minVal = Math.min(minVal, currentMin);
+            maxVal = Math.max(maxVal, currentMax);
+        }
+        
+        return maxDist;
+    }
+}
