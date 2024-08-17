@@ -37,3 +37,52 @@ The blue cells denote the optimal cells to pick, which have coordinates (0, 1), 
 You add 5 + 3 + 4 = 12 to your score.
 However, you must subtract abs(1 - 1) + abs(1 - 0) = 1 from your score.
 Your final score is 12 - 1 = 11.
+
+
+CODE:
+public class Solution {
+    public long maxPoints(int[][] points) {
+        int m = points.length;
+        int n = points[0].length;
+        long[] dp = new long[n];
+
+        // Initialize dp with the first row
+        for (int j = 0; j < n; j++) {
+            dp[j] = points[0][j];
+        }
+
+        // Iterate over each row starting from the second row
+        for (int i = 1; i < m; i++) {
+            long[] left = new long[n];
+            long[] right = new long[n];
+            long[] newDp = new long[n];
+
+            // Fill the left array
+            left[0] = dp[0];
+            for (int j = 1; j < n; j++) {
+                left[j] = Math.max(left[j - 1] - 1, dp[j]);
+            }
+
+            // Fill the right array
+            right[n - 1] = dp[n - 1];
+            for (int j = n - 2; j >= 0; j--) {
+                right[j] = Math.max(right[j + 1] - 1, dp[j]);
+            }
+
+            // Update dp array for the current row
+            for (int j = 0; j < n; j++) {
+                newDp[j] = points[i][j] + Math.max(left[j], right[j]);
+            }
+
+            // Move to the next row
+            dp = newDp;
+        }
+
+        // The maximum value in dp array will be the result
+        long maxPoints = 0;
+        for (int j = 0; j < n; j++) {
+            maxPoints = Math.max(maxPoints, dp[j]);
+        }
+        return maxPoints;
+    }
+}
