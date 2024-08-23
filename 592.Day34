@@ -29,3 +29,60 @@ Each fraction (input and output) has the format ±numerator/denominator. If the 
 The input only contains valid irreducible fractions, where the numerator and denominator of each fraction will always be in the range [1, 10]. If the denominator is 1, it means this fraction is actually an integer in a fraction format defined above.
 The number of given fractions will be in the range [1, 10].
 The numerator and denominator of the final result are guaranteed to be valid and in the range of 32-bit int.
+
+CODE:
+import java.util.*;
+
+public class Solution {
+    public String fractionAddition(String expression) {
+        int numerator = 0;
+        int denominator = 1;
+        int index = 0;
+        int length = expression.length();
+
+        while (index < length) {
+            // Parse the sign
+            int sign = 1;
+            if (expression.charAt(index) == '+' || expression.charAt(index) == '-') {
+                sign = expression.charAt(index) == '-' ? -1 : 1;
+                index++;
+            }
+            
+            // Parse the numerator
+            int start = index;
+            while (index < length && Character.isDigit(expression.charAt(index))) {
+                index++;
+            }
+            int currentNumerator = Integer.parseInt(expression.substring(start, index)) * sign;
+            
+            // Parse the denominator
+            index++; // Skip the '/'
+            start = index;
+            while (index < length && Character.isDigit(expression.charAt(index))) {
+                index++;
+            }
+            int currentDenominator = Integer.parseInt(expression.substring(start, index));
+            
+            // Add the current fraction to the result
+            numerator = numerator * currentDenominator + currentNumerator * denominator;
+            denominator = denominator * currentDenominator;
+            
+            // Simplify the result so far
+            int gcd = gcd(Math.abs(numerator), Math.abs(denominator));
+            numerator /= gcd;
+            denominator /= gcd;
+        }
+        
+        return numerator + "/" + denominator;
+    }
+    
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+}
+
