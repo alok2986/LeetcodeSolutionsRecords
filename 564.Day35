@@ -26,3 +26,44 @@ Constraints:
 n consists of only digits.
 n does not have leading zeros.
 n is representing an integer in the range [1, 1018 - 1].
+
+
+CODE:
+public class Solution {
+    public String nearestPalindromic(String n) {
+        int len = n.length();
+        long originalNum = Long.parseLong(n);
+        
+        // Candidates from basic palindromic mirroring
+        String preStr = n.substring(0, (len + 1) / 2);
+        long pre = Long.parseLong(preStr);
+        
+        // Three basic palindromic candidates
+        long candidate1 = getPalindrome(pre, len % 2 == 0);         // The direct mirroring
+        long candidate2 = getPalindrome(pre - 1, len % 2 == 0);     // Smaller palindromic by reducing the middle part
+        long candidate3 = getPalindrome(pre + 1, len % 2 == 0);     // Larger palindromic by increasing the middle part
+        
+        // Handle edge cases like 999, 1000, etc.
+        long candidate4 = (long)Math.pow(10, len - 1) - 1;          // 999...999
+        long candidate5 = (long)Math.pow(10, len) + 1;              // 1000...0001
+        
+        // Consider all candidates and find the closest
+        long closest = -1;
+        for (long candidate : new long[]{candidate1, candidate2, candidate3, candidate4, candidate5}) {
+            if (candidate != originalNum) {
+                if (closest == -1 || Math.abs(candidate - originalNum) < Math.abs(closest - originalNum) ||
+                    (Math.abs(candidate - originalNum) == Math.abs(closest - originalNum) && candidate < closest)) {
+                    closest = candidate;
+                }
+            }
+        }
+        
+        return String.valueOf(closest);
+    }
+    
+    private long getPalindrome(long pre, boolean isEvenLength) {
+        String strPre = String.valueOf(pre);
+        String reverse = new StringBuilder(strPre).reverse().toString();
+        return Long.parseLong(strPre + reverse.substring(isEvenLength ? 0 : 1));
+    }
+}
