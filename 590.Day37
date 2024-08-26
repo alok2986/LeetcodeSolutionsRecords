@@ -26,3 +26,22 @@ The number of nodes in the tree is in the range [0, 104].
 0 <= Node.val <= 104
 The height of the n-ary tree is less than or equal to 1000.
  
+CODE:
+class Solution {
+    public List<Integer> postorder(Node root) {
+        LinkedList<Integer> ans = new LinkedList<>();
+        if (root == null) {
+            return ans;
+        }
+        Deque<Node> stk = new ArrayDeque<>();
+        stk.offer(root);
+        while (!stk.isEmpty()) {
+            root = stk.pollLast();
+            ans.addFirst(root.val);
+            for (Node child : root.children) {
+                stk.offer(child);
+            }
+        }
+        return ans;
+    }
+}
