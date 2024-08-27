@@ -148,3 +148,31 @@ class Solution {
         // Array to store the maximum probability to reach each node
         double[] maxProb = new double[n];
         maxProb[start] = 1.0;
+          // Process the nodes
+        while (!pq.isEmpty()) {
+            double[] current = pq.poll();
+            int node = (int) current[0];
+            double prob = current[1];
+
+            // If we have reached the end node, return the probability
+            if (node == end) {
+                return prob;
+            }
+
+            // Traverse neighbors
+            for (int[] neighbor : graph.get(node)) {
+                int nextNode = neighbor[0];
+                double newProb = prob * succProb[neighbor[1]];
+
+                // If this path offers a higher probability, update and push to the queue
+                if (newProb > maxProb[nextNode]) {
+                    maxProb[nextNode] = newProb;
+                    pq.offer(new double[]{nextNode, newProb});
+                }
+            }
+        }
+
+        // If we never reach the end node, return 0
+        return 0.0;
+    }
+}
