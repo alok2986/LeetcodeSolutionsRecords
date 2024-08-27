@@ -43,3 +43,79 @@ a != b
 0 <= succProb.length == edges.length <= 2*10^4
 0 <= succProb[i] <= 1
 There is at most one edge between every two nodes.
+
+
+CODE:
+import java.util.*;
+
+class Solution {
+    public double maxProbability(int n, int[][] edges, double[] succProb, int start, int end) {
+        // Build the graph as an adjacency list
+        Map<Integer, List<Pair<Integer, Double>>> graph = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            graph.put(i, new ArrayList<>());
+        }
+        for (int i = 0; i < edges.length; i++) {
+            int u = edges[i][0];
+            int v = edges[i][1];
+            double prob = succProb[i];
+            graph.get(u).add(new Pair<>(v, prob));
+            graph.get(v).add(new Pair<>(u, prob));
+        }
+
+        // Use a max-heap to always expand the most probable path
+        PriorityQueue<Pair<Integer, Double>> pq = new PriorityQueue<>((a, b) -> Double.compare(b.getValue(), a.getValue()));
+        pq.offer(new Pair<>(start, 1.0));
+
+        // Store the maximum probability to reach each node
+        double[] maxProb = new double[n];
+        maxProb[start] = 1.0;
+
+        // Dijkstra-like algorithm
+        while (!pq.isEmpty()) {
+            Pair<Integer, Double> current = pq.poll();
+            int node = current.getKey();
+            double prob = current.getValue();
+
+            // If we reach the end node, return the probability
+            if (node == end) {
+                return prob;
+            }
+
+            // Explore neighbors
+            for (Pair<Integer, Double> neighbor : graph.get(node)) {
+                int nextNode = neighbor.getKey();
+                double edgeProb = neighbor.getValue();
+                double newProb = prob * edgeProb;
+
+                // If we found a path with a higher probability, update and add to the queue
+                if (newProb > maxProb[nextNode]) {
+                    maxProb[nextNode] = newProb;
+                    pq.offer(new Pair<>(nextNode, newProb));
+                }
+            }
+        }
+
+        // If we never reached the end, return 0
+        return 0.0;
+    }
+
+    // Helper class for pairs
+    private class Pair<K, V> {
+        private K key;
+        private V value;
+
+        public Pair(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+    }
+}
