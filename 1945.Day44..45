@@ -44,3 +44,33 @@ Constraints:
 1 <= s.length <= 100
 1 <= k <= 10
 s consists of lowercase English letters.
+
+
+CODE:
+class Solution {
+    public int getLucky(String s, int k) {
+        // Step 1: Convert the string to a number by replacing each letter with its position in the alphabet
+        StringBuilder number = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            int val = c - 'a' + 1; // 'a' -> 1, 'b' -> 2, ..., 'z' -> 26
+            number.append(val);
+        }
+
+        // Step 2: Sum the digits, repeating the process k times
+        int sum = 0;
+        for (char digit : number.toString().toCharArray()) {
+            sum += digit - '0';
+        }
+        
+        for (int i = 1; i < k; i++) {
+            int newSum = 0;
+            while (sum > 0) {
+                newSum += sum % 10;
+                sum /= 10;
+            }
+            sum = newSum;
+        }
+        
+        return sum;
+    }
+}
