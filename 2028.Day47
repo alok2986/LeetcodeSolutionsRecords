@@ -37,3 +37,42 @@ Constraints:
 m == rolls.length
 1 <= n, m <= 105
 1 <= rolls[i], mean <= 6
+
+
+CODE:
+import java.util.Arrays;
+
+public class Solution {
+    public int[] missingRolls(int[] rolls, int mean, int n) {
+        int m = rolls.length;
+        
+        // Step 1: Calculate the total sum we need for n + m rolls
+        int totalSum = mean * (n + m);
+        
+        // Step 2: Calculate the sum of observed rolls
+        int observedSum = 0;
+        for (int roll : rolls) {
+            observedSum += roll;
+        }
+        
+        // Step 3: Calculate the sum of missing rolls
+        int missingSum = totalSum - observedSum;
+        
+        // Step 4: Check if the sum of missing rolls is valid
+        if (missingSum < n || missingSum > 6 * n) {
+            return new int[0];  // No valid solution
+        }
+        
+        // Step 5: Distribute the missing sum across n rolls
+        int[] result = new int[n];
+        Arrays.fill(result, missingSum / n);  // Start by giving each missing roll the average value
+        int remainder = missingSum % n;  // Handle the remainder to distribute
+        
+        // Distribute the remainder across some of the rolls (increment them by 1)
+        for (int i = 0; i < remainder; i++) {
+            result[i]++;
+        }
+        
+        return result;
+    }
+}
