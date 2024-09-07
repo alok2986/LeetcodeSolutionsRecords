@@ -36,3 +36,102 @@ Constraints:
 The number of nodes in the tree will be in the range [1, 2500].
 The number of nodes in the list will be in the range [1, 100].
 1 <= Node.val <= 100 for each node in the linked list and binary tree.
+
+CODE:
+class ListNode {
+    int val;
+    ListNode next;
+    
+    ListNode(int val) {
+        this.val = val;
+        this.next = null;
+    }
+
+    // Method to deserialize the input string to ListNode linked list
+    public static ListNode deserialize(String data) {
+        if (data == null || data.isEmpty()) {
+            return null;
+        }
+
+        String[] values = data.replaceAll("\\[|\\]", "").split(",");
+        ListNode dummy = new ListNode(0);
+        ListNode current = dummy;
+
+        for (String val : values) {
+            current.next = new ListNode(Integer.parseInt(val.trim()));
+            current = current.next;
+        }
+
+        return dummy.next;
+    }
+}
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    
+    TreeNode(int val) {
+        this.val = val;
+    }
+
+    // Method to deserialize the input string to TreeNode binary tree
+    public static TreeNode deserialize(String data) {
+        if (data == null || data.isEmpty()) {
+            return null;
+        }
+
+        String[] values = data.replaceAll("\\[|\\]", "").split(",");
+        if (values.length == 0 || values[0].equals("null")) {
+            return null;
+        }
+
+        TreeNode root = new TreeNode(Integer.parseInt(values[0].trim()));
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int i = 1;
+
+        while (!queue.isEmpty() && i < values.length) {
+            TreeNode current = queue.poll();
+            if (!values[i].equals("null")) {
+                current.left = new TreeNode(Integer.parseInt(values[i].trim()));
+                queue.offer(current.left);
+            }
+            i++;
+
+            if (i < values.length && !values[i].equals("null")) {
+                current.right = new TreeNode(Integer.parseInt(values[i].trim()));
+                queue.offer(current.right);
+            }
+            i++;
+        }
+
+        return root;
+    }
+}
+
+class Solution {
+
+    public boolean isSubPath(ListNode head, TreeNode root) {
+        if (root == null) {
+            return false;
+        }
+        
+        // Check if path starts from current root or go left or right
+        return dfs(head, root) || isSubPath(head, root.left) || isSubPath(head, root.right);
+    }
+
+    private boolean dfs(ListNode head, TreeNode node) {
+        if (head == null) {
+            return true; // Reached the end of the linked list
+        }
+        if (node == null) {
+            return false; // Reached the end of a tree branch
+        }
+        if (head.val != node.val) {
+            return false; // Value mismatch
+        }
+        // Continue checking in both left and right subtree
+        return dfs(head.next, node.left) || dfs(head.next, node.right);
+    }
+}
