@@ -33,3 +33,38 @@ Constraints:
 1 <= words[i].length <= 10
 The characters in allowed are distinct.
 words[i] and allowed contain only lowercase English letters.
+
+CODE:
+import java.util.HashSet;
+import java.util.Set;
+
+public class Solution {
+    public int countConsistentStrings(String allowed, String[] words) {
+        // Convert allowed string into a set of characters for quick lookup
+        Set<Character> allowedSet = new HashSet<>();
+        for (char ch : allowed.toCharArray()) {
+            allowedSet.add(ch);
+        }
+
+        int count = 0;
+
+        // Iterate through each word in the words array
+        for (String word : words) {
+            boolean isConsistent = true;
+            // Check each character of the word
+            for (char ch : word.toCharArray()) {
+                // If the character is not in the allowed set, mark as inconsistent
+                if (!allowedSet.contains(ch)) {
+                    isConsistent = false;
+                    break;
+                }
+            }
+            // If the word is consistent, increment the count
+            if (isConsistent) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+}
