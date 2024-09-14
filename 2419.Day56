@@ -36,3 +36,33 @@ Constraints:
 
 1 <= nums.length <= 105
 1 <= nums[i] <= 106
+
+
+CODE:
+public class Solution {
+    public int longestSubarray(int[] nums) {
+        int maxVal = 0;
+        
+        // Step 1: Find the maximum value in the array
+        for (int num : nums) {
+            if (num > maxVal) {
+                maxVal = num;
+            }
+        }
+        
+        // Step 2: Find the longest contiguous subarray of maxVal
+        int maxLength = 0;
+        int currentLength = 0;
+        
+        for (int num : nums) {
+            if (num == maxVal) {
+                currentLength++;
+                maxLength = Math.max(maxLength, currentLength);
+            } else {
+                currentLength = 0; // Reset the length when encountering a different value
+            }
+        }
+        
+        return maxLength;
+    }
+}
