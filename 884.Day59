@@ -34,3 +34,38 @@ Constraints:
 s1 and s2 consist of lowercase English letters and spaces.
 s1 and s2 do not have leading or trailing spaces.
 All the words in s1 and s2 are separated by a single space.
+
+CODE:
+import java.util.*;
+
+public class Solution {
+    public String[] uncommonFromSentences(String s1, String s2) {
+        // Step 1: Split both sentences into words
+        String[] words1 = s1.split(" ");
+        String[] words2 = s2.split(" ");
+        
+        // Step 2: Create a HashMap to store the word frequencies
+        Map<String, Integer> wordCount = new HashMap<>();
+        
+        // Step 3: Count the frequency of words in the first sentence
+        for (String word : words1) {
+            wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+        }
+        
+        // Step 4: Count the frequency of words in the second sentence
+        for (String word : words2) {
+            wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+        }
+        
+        // Step 5: Collect words that appear exactly once
+        List<String> result = new ArrayList<>();
+        for (String word : wordCount.keySet()) {
+            if (wordCount.get(word) == 1) {
+                result.add(word);
+            }
+        }
+        
+        // Step 6: Convert the result list to an array and return
+        return result.toArray(new String[0]);
+    }
+}
