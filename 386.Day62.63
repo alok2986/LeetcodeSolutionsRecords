@@ -35,3 +35,36 @@ Acceptance Rate
 Topics
 Companies
 Discussion (108)
+
+CODE:
+import java.util.*;
+
+public class Solution {
+    public List<Integer> lexicalOrder(int n) {
+        List<Integer> result = new ArrayList<>();
+        // Start with the first digit 1 to 9
+        for (int i = 1; i <= 9; i++) {
+            dfs(i, n, result);
+        }
+        return result;
+    }
+    
+    private void dfs(int curr, int n, List<Integer> result) {
+        // If the current number is greater than n, stop the recursion
+        if (curr > n) {
+            return;
+        }
+        
+        // Add the current number to the result
+        result.add(curr);
+        
+        // Try to append digits 0-9 to the current number (curr)
+        for (int i = 0; i <= 9; i++) {
+            int next = curr * 10 + i;
+            if (next > n) {
+                return;
+            }
+            dfs(next, n, result);
+        }
+    }
+}
