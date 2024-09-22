@@ -20,3 +20,37 @@ Output: 1
 Constraints:
 
 1 <= k <= n <= 109
+
+CODE:
+public class Solution {
+    public int findKthNumber(int n, int k) {
+        int curr = 1;  // Start from 1, the smallest lexicographical number
+        k--;  // We are looking for the k-th number, but we already count '1', so decrement k
+        
+        while (k > 0) {
+            long steps = calculateSteps(n, curr, curr + 1);  // Count the steps between `curr` and `curr + 1`
+            if (steps <= k) {
+                // If there are fewer or exactly `k` numbers in this subtree, move to the next sibling
+                curr++;
+                k -= steps;
+            } else {
+                // If the k-th number is in the current subtree, move down to the next level
+                curr *= 10;
+                k--;  // We count the current number
+            }
+        }
+        
+        return curr;
+    }
+    
+    // Function to calculate how many numbers exist in the subtree rooted at `curr` and before `next`
+    private long calculateSteps(int n, long curr, long next) {
+        long steps = 0;
+        while (curr <= n) {
+            steps += Math.min(n + 1, next) - curr;  // Count the steps between `curr` and `next`
+            curr *= 10;
+            next *= 10;
+        }
+        return steps;
+    }
+}
