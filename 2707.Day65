@@ -29,3 +29,35 @@ Constraints:
 1 <= dictionary[i].length <= 50
 dictionary[i] and s consists of only lowercase English letters
 dictionary contains distinct words
+
+CODE:
+import java.util.*;
+
+class Solution {
+    public int minExtraChar(String s, String[] dictionary) {
+        int n = s.length();
+        // dp[i] represents the minimum extra characters for substring s[0:i]
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;  // Base case: no characters, no extra characters.
+
+        Set<String> dictSet = new HashSet<>(Arrays.asList(dictionary));  // Convert dictionary array to a set for fast lookup.
+
+        // Iterate through all substrings of s.
+        for (int i = 1; i <= n; i++) {
+            // Case 1: Assume the character s[i-1] is an extra character.
+            dp[i] = dp[i - 1] + 1;
+
+            // Case 2: Try to match a word from the dictionary that ends at index i-1.
+            for (int j = i - 1; j >= 0; j--) {
+                String substring = s.substring(j, i);
+                if (dictSet.contains(substring)) {
+                    dp[i] = Math.min(dp[i], dp[j]);  // No extra characters for a valid match.
+                }
+            }
+        }
+
+        // Return the minimum extra characters for the entire string.
+        return dp[n];
+    }
+}
