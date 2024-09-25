@@ -1,0 +1,52 @@
+Code:
+import java.util.*;
+
+class Solution {
+    // Define a TrieNode class
+    class TrieNode {
+        TrieNode[] children = new TrieNode[26]; // For 26 lowercase English letters
+        int count = 0; // Number of words sharing this prefix
+    }
+    
+    TrieNode root = new TrieNode();
+    
+    // Method to insert a word into the Trie
+    private void insert(String word) {
+        TrieNode node = root;
+        for (char ch : word.toCharArray()) {
+            int idx = ch - 'a';
+            if (node.children[idx] == null) {
+                node.children[idx] = new TrieNode();
+            }
+            node = node.children[idx];
+            node.count++; // Increment the count for this prefix
+        }
+    }
+    
+    // Method to calculate the prefix score for a word
+    private int getPrefixScore(String word) {
+        TrieNode node = root;
+        int score = 0;
+        for (char ch : word.toCharArray()) {
+            int idx = ch - 'a';
+            node = node.children[idx];
+            score += node.count; // Add the count for this prefix
+        }
+        return score;
+    }
+    
+    public int[] sumPrefixScores(String[] words) {
+        // Step 1: Insert all words into the Trie
+        for (String word : words) {
+            insert(word);
+        }
+        
+        // Step 2: Calculate the prefix score for each word
+        int[] result = new int[words.length];
+        for (int i = 0; i < words.length; i++) {
+            result[i] = getPrefixScore(words[i]);
+        }
+        
+        return result;
+    }
+}
