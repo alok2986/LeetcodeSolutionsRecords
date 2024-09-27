@@ -37,3 +37,40 @@ Constraints:
 
 0 <= start < end <= 109
 At most 1000 calls will be made to book.
+
+
+CODE
+import java.util.ArrayList;
+import java.util.List;
+
+class MyCalendarTwo {
+    private List<int[]> singleBookings; // Tracks intervals that are booked once
+    private List<int[]> doubleBookings; // Tracks intervals that are booked twice
+
+    public MyCalendarTwo() {
+        singleBookings = new ArrayList<>();
+        doubleBookings = new ArrayList<>();
+    }
+
+    public boolean book(int start, int end) {
+        // Check if there is a triple booking by checking against doubleBookings
+        for (int[] db : doubleBookings) {
+            if (start < db[1] && end > db[0]) { // Overlaps with a double booking
+                return false; // This would cause a triple booking
+            }
+        }
+
+        // Check for overlaps with single bookings and add to double bookings if needed
+        for (int[] sb : singleBookings) {
+            if (start < sb[1] && end > sb[0]) { // Overlaps with a single booking
+                int overlapStart = Math.max(start, sb[0]);
+                int overlapEnd = Math.min(end, sb[1]);
+                doubleBookings.add(new int[]{overlapStart, overlapEnd});
+            }
+        }
+
+        // Add this new booking to single bookings
+        singleBookings.add(new int[]{start, end});
+        return true; // Booking successful
+    }
+}
