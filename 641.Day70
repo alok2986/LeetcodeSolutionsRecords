@@ -43,3 +43,73 @@ Constraints:
 1 <= k <= 1000
 0 <= value <= 1000
 At most 2000 calls will be made to insertFront, insertLast, deleteFront, deleteLast, getFront, getRear, isEmpty, isFull.
+
+
+CODE:
+class MyCircularDeque {
+    private int[] deque;
+    private int front, rear, size;
+
+    public MyCircularDeque(int k) {
+        deque = new int[k + 1];  // Create an array of size k+1 for circular behavior
+        front = 0;
+        rear = 0;
+        size = k + 1;            // Use k+1 to differentiate between full and empty
+    }
+
+    public boolean insertFront(int value) {
+        if (isFull()) {
+            return false; // Cannot insert if deque is full
+        }
+        front = (front - 1 + size) % size; // Move front pointer backward
+        deque[front] = value; // Insert the value
+        return true;
+    }
+
+    public boolean insertLast(int value) {
+        if (isFull()) {
+            return false; // Cannot insert if deque is full
+        }
+        deque[rear] = value; // Insert the value
+        rear = (rear + 1) % size; // Move rear pointer forward
+        return true;
+    }
+
+    public boolean deleteFront() {
+        if (isEmpty()) {
+            return false; // Cannot delete if deque is empty
+        }
+        front = (front + 1) % size; // Move front pointer forward
+        return true;
+    }
+
+    public boolean deleteLast() {
+        if (isEmpty()) {
+            return false; // Cannot delete if deque is empty
+        }
+        rear = (rear - 1 + size) % size; // Move rear pointer backward
+        return true;
+    }
+
+    public int getFront() {
+        if (isEmpty()) {
+            return -1; // Return -1 if deque is empty
+        }
+        return deque[front]; // Return the front value
+    }
+
+    public int getRear() {
+        if (isEmpty()) {
+            return -1; // Return -1 if deque is empty
+        }
+        return deque[(rear - 1 + size) % size]; // Return the rear value
+    }
+
+    public boolean isEmpty() {
+        return front == rear; // Deque is empty if front and rear are the same
+    }
+
+    public boolean isFull() {
+        return (rear + 1) % size == front; // Deque is full if front is right next to rear
+    }
+}
