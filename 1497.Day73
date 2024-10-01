@@ -35,3 +35,33 @@ arr.length == n
 n is even.
 -109 <= arr[i] <= 109
 1 <= k <= 105
+
+CODE:
+public class Solution {
+    public boolean canArrange(int[] arr, int k) {
+        int[] remainderCounts = new int[k];
+        
+        // Count the remainders
+        for (int num : arr) {
+            int remainder = num % k;
+            if (remainder < 0) { // Handle negative remainders
+                remainder += k;
+            }
+            remainderCounts[remainder]++;
+        }
+        
+        // Check remainder pairs
+        if (remainderCounts[0] % 2 != 0) {
+            return false; // Elements with remainder 0 must pair with each other
+        }
+        
+        // Check other remainders
+        for (int i = 1; i <= k / 2; i++) {
+            if (remainderCounts[i] != remainderCounts[k - i]) {
+                return false; // Count of remainder i must equal count of remainder k - i
+            }
+        }
+        
+        return true;
+    }
+}
