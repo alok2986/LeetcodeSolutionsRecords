@@ -33,3 +33,50 @@ Constraints:
 1 <= nums.length <= 105
 1 <= nums[i] <= 109
 1 <= p <= 109
+
+
+CODE:
+import java.util.HashMap;
+import java.util.Map;
+
+public class Solution {
+    public int minSubarray(int[] nums, int p) {
+        // Step 1: Calculate total sum modulo p
+        long totalSum = 0;
+        for (int num : nums) {
+            totalSum += num;
+        }
+        
+        long remainder = totalSum % p;
+        if (remainder == 0) {
+            return 0; // Already divisible by p
+        }
+        
+        // Step 2: Track prefix sums and their mod values
+        Map<Long, Integer> prefixModMap = new HashMap<>();
+        prefixModMap.put(0L, -1);  // Helps to handle cases where prefix sum itself is divisible by p
+        
+        long currentPrefixSum = 0;
+        int minLength = nums.length;
+        
+        for (int i = 0; i < nums.length; i++) {
+            currentPrefixSum += nums[i];
+            long currentMod = currentPrefixSum % p;
+            
+            // Calculate target remainder to remove
+            long target = (currentMod - remainder + p) % p;
+            
+            // If we have seen this target remainder before, calculate subarray length
+            if (prefixModMap.containsKey(target)) {
+                int prevIndex = prefixModMap.get(target);
+                minLength = Math.min(minLength, i - prevIndex);
+            }
+            
+            // Store the current prefix sum remainder
+            prefixModMap.put(currentMod, i);
+        }
+        
+        // Step 3: If no valid subarray found, return -1
+        return minLength == nums.length ? -1 : minLength;
+    }
+}
