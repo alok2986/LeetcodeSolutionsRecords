@@ -38,3 +38,40 @@ Constraints:
 2 <= skill.length <= 105
 skill.length is even.
 1 <= skill[i] <= 1000
+
+
+CODE:
+import java.util.Arrays;
+
+public class Solution {
+    public long dividePlayers(int[] skill) {
+        // Step 1: Sort the skill array
+        Arrays.sort(skill);
+        
+        // Step 2: Calculate the target total skill sum for each pair
+        int n = skill.length;
+        int targetSkillSum = skill[0] + skill[n - 1];  // Sum of the first and last elements
+        long totalChemistry = 0;  // To store the sum of chemistry
+        
+        // Step 3: Two-pointer approach to form teams
+        int left = 0, right = n - 1;
+        while (left < right) {
+            int currentPairSkillSum = skill[left] + skill[right];
+            
+            // Step 4: Check if the current pair's skill sum matches the target
+            if (currentPairSkillSum != targetSkillSum) {
+                return -1;  // Not possible to form valid teams
+            }
+            
+            // Step 5: Calculate chemistry and add to total
+            totalChemistry += (long) skill[left] * skill[right];
+            
+            // Move pointers
+            left++;
+            right--;
+        }
+        
+        // Step 6: Return the total chemistry
+        return totalChemistry;
+    }
+}
