@@ -34,3 +34,34 @@ Constraints:
 
 1 <= s.length <= 100
 s consists only of uppercase English letters.
+
+
+CODE
+public class Solution {
+    public int minLength(String s) {
+        // Use a stack to store characters after checking for "AB" and "CD"
+        Stack<Character> stack = new Stack<>();
+        
+        for (char c : s.toCharArray()) {
+            if (!stack.isEmpty()) {
+                char top = stack.peek();
+                
+                // If we find an "AB" or "CD", pop the top and skip the current character
+                if (top == 'A' && c == 'B') {
+                    stack.pop();
+                } else if (top == 'C' && c == 'D') {
+                    stack.pop();
+                } else {
+                    // Otherwise, push the current character onto the stack
+                    stack.push(c);
+                }
+            } else {
+                // If stack is empty, simply push the current character
+                stack.push(c);
+            }
+        }
+        
+        // The size of the stack is the minimum possible length of the string
+        return stack.size();
+    }
+}
