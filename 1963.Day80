@@ -45,3 +45,43 @@ n is even.
 s[i] is either '[' or ']'.
 The number of opening brackets '[' equals n / 2, and the number of closing brackets ']' equals n / 2.
 
+
+CODE
+public class Solution {
+    public int minSwaps(String s) {
+        int balance = 0;
+        int minBalance = 0;
+
+        // Traverse through the string
+        for (char ch : s.toCharArray()) {
+            if (ch == '[') {
+                balance++;  // Increase balance for an opening bracket
+            } else {
+                balance--;  // Decrease balance for a closing bracket
+            }
+
+            // Track the minimum balance (how unbalanced the string is at worst)
+            minBalance = Math.min(minBalance, balance);
+        }
+
+        // The number of swaps needed is half of the absolute value of minBalance
+        return (-minBalance + 1) / 2;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        
+        // Test case 1
+        String s1 = "][][";
+        System.out.println("Minimum swaps for s1: " + solution.minSwaps(s1));  // Output: 1
+        
+        // Test case 2
+        String s2 = "]]][[[";
+        System.out.println("Minimum swaps for s2: " + solution.minSwaps(s2));  // Output: 2
+        
+        // Test case 3
+        String s3 = "[]";
+        System.out.println("Minimum swaps for s3: " + solution.minSwaps(s3));  // Output: 0
+    }
+}
+
