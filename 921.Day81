@@ -28,3 +28,45 @@ Constraints:
 
 1 <= s.length <= 1000
 s[i] is either '(' or ')'.
+
+CODE:
+
+public class Solution {
+    public int minAddToMakeValid(String s) {
+        int openNeeded = 0;  // Keeps track of unmatched opening brackets
+        int closeNeeded = 0; // Keeps track of unmatched closing brackets
+
+        // Traverse through the string
+        for (char ch : s.toCharArray()) {
+            if (ch == '(') {
+                openNeeded++;  // We expect a closing bracket for this opening bracket
+            } else {
+                // If there's no unmatched opening bracket to pair with this closing bracket
+                if (openNeeded > 0) {
+                    openNeeded--;  // We have a matching open bracket, so reduce openNeeded
+                } else {
+                    closeNeeded++; // We need an additional open bracket
+                }
+            }
+        }
+
+        // The total number of additions needed is the sum of unmatched opening and closing brackets
+        return openNeeded + closeNeeded;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        // Test case 1
+        String s1 = "())";
+        System.out.println("Minimum moves for s1: " + solution.minAddToMakeValid(s1));  // Output: 1
+
+        // Test case 2
+        String s2 = "(((";
+        System.out.println("Minimum moves for s2: " + solution.minAddToMakeValid(s2));  // Output: 3
+
+        // Test case 3
+        String s3 = "()()";
+        System.out.println("Minimum moves for s3: " + solution.minAddToMakeValid(s3));  // Output: 0
+    }
+}
