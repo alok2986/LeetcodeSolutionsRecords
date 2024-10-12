@@ -1,0 +1,118 @@
+1942. The Number of the Smallest Unoccupied Chair
+Medium
+Topics
+Companies
+Hint
+There is a party where n friends numbered from 0 to n - 1 are attending. There is an infinite number of chairs in this party that are numbered from 0 to infinity. When a friend arrives at the party, they sit on the unoccupied chair with the smallest number.
+
+For example, if chairs 0, 1, and 5 are occupied when a friend comes, they will sit on chair number 2.
+When a friend leaves the party, their chair becomes unoccupied at the moment they leave. If another friend arrives at that same moment, they can sit in that chair.
+
+You are given a 0-indexed 2D integer array times where times[i] = [arrivali, leavingi], indicating the arrival and leaving times of the ith friend respectively, and an integer targetFriend. All arrival times are distinct.
+
+Return the chair number that the friend numbered targetFriend will sit on.
+
+ 
+
+Example 1:
+
+Input: times = [[1,4],[2,3],[4,6]], targetFriend = 1
+Output: 1
+Explanation: 
+- Friend 0 arrives at time 1 and sits on chair 0.
+- Friend 1 arrives at time 2 and sits on chair 1.
+- Friend 1 leaves at time 3 and chair 1 becomes empty.
+- Friend 0 leaves at time 4 and chair 0 becomes empty.
+- Friend 2 arrives at time 4 and sits on chair 0.
+Since friend 1 sat on chair 1, we return 1.
+Example 2:
+
+Input: times = [[3,10],[1,5],[2,6]], targetFriend = 0
+Output: 2
+Explanation: 
+- Friend 1 arrives at time 1 and sits on chair 0.
+- Friend 2 arrives at time 2 and sits on chair 1.
+- Friend 0 arrives at time 3 and sits on chair 2.
+- Friend 1 leaves at time 5 and chair 0 becomes empty.
+- Friend 2 leaves at time 6 and chair 1 becomes empty.
+- Friend 0 leaves at time 10 and chair 2 becomes empty.
+Since friend 0 sat on chair 2, we return 2.
+ 
+
+Constraints:
+
+n == times.length
+2 <= n <= 104
+times[i].length == 2
+1 <= arrivali < leavingi <= 105
+0 <= targetFriend <= n - 1
+Each arrivali time is distinct.
+
+CODE:
+import java.util.*;
+
+public class Solution {
+    public int smallestChair(int[][] times, int targetFriend) {
+        int n = times.length;
+        
+        // Step 1: Create an array of friends with their arrival and departure times
+        int[][] friends = new int[n][3]; // {arrival, departure, friend index}
+        for (int i = 0; i < n; i++) {
+            friends[i][0] = times[i][0]; // arrival time
+            friends[i][1] = times[i][1]; // departure time
+            friends[i][2] = i;           // friend index
+        }
+        
+        // Step 2: Sort friends by their arrival time
+        Arrays.sort(friends, (a, b) -> a[0] - b[0]);
+        
+        // Step 3: Min-heap to track available chairs
+        PriorityQueue<Integer> availableChairs = new PriorityQueue<>();
+        for (int i = 0; i < n; i++) {
+            availableChairs.offer(i); // Initially, all chairs [0, 1, 2, ..., n-1] are available
+        }
+        
+        // Step 4: Min-heap to track when friends leave {departure time, chair number}
+        PriorityQueue<int[]> occupiedChairs = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        
+        // Step 5: Process each friend's arrival
+        for (int[] friend : friends) {
+            int arrivalTime = friend[0];
+            int departureTime = friend[1];
+            int friendIndex = friend[2];
+            
+            // Step 6: Free up chairs of friends who have already left before this friend's arrival
+            while (!occupiedChairs.isEmpty() && occupiedChairs.peek()[0] <= arrivalTime) {
+                availableChairs.offer(occupiedChairs.poll()[1]); // Free the chair and put it back into the available pool
+            }
+            
+            // Step 7: Assign the smallest available chair to the current friend
+            int assignedChair = availableChairs.poll();
+            
+            // Step 8: If the current friend is the target friend, return the chair number
+            if (friendIndex == targetFriend) {
+                return assignedChair;
+            }
+            
+            // Step 9: Add the friend's departure time and chair number to the occupied chairs heap
+            occupiedChairs.offer(new int[]{departureTime, assignedChair});
+        }
+        
+        // This line should never be reached, but return -1 to satisfy the compiler
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        // Example 1
+        int[][] times1 = {{1, 4}, {2, 3}, {4, 6}};
+        int targetFriend1 = 1;
+        System.out.println(solution.smallestChair(times1, targetFriend1)); // Output: 1
+
+        // Example 2
+        int[][] times2 = {{3, 10}, {1, 5}, {2, 6}};
+        int targetFriend2 = 0;
+        System.out.println(solution.smallestChair(times2, targetFriend2)); // Output: 2
+    }
+}
