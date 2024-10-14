@@ -36,3 +36,38 @@ Constraints:
 
 1 <= nums.length, k <= 105
 1 <= nums[i] <= 109
+
+
+CODE
+import java.util.PriorityQueue;
+
+public class Solution {
+    public long maxKelements(int[] nums, int k) {
+        // Max-heap to store the elements, using negative values to simulate max-heap
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a, b) -> b - a);
+        
+        // Step 1: Add all elements of nums into the heap
+        for (int num : nums) {
+            maxHeap.offer(num);
+        }
+        
+        long score = 0; // To store the total score
+        
+        // Step 2: Perform k operations
+        for (int i = 0; i < k; i++) {
+            // Step 3: Extract the largest element
+            int maxElement = maxHeap.poll();
+            
+            // Add the max element to the score
+            score += maxElement;
+            
+            // Step 4: Replace the max element with ceil(maxElement / 3)
+            int newElement = (maxElement + 2) / 3;
+            
+            // Insert the updated value back into the heap
+            maxHeap.offer(newElement);
+        }
+        
+        return score; // Return the total score after k operations
+    }
+}
