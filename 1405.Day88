@@ -32,3 +32,82 @@ Constraints:
 
 0 <= a, b, c <= 100
 a + b + c > 
+\
+
+Code
+import java.util.PriorityQueue;
+
+public class Solution {
+    public String longestDiverseString(int a, int b, int c) {
+        // Max heap to store character counts in decreasing order
+        PriorityQueue<Pair> maxHeap = new PriorityQueue<>((x, y) -> y.count - x.count);
+
+        // Add the characters 'a', 'b', 'c' to the heap with their respective counts
+        if (a > 0) {
+            maxHeap.offer(new Pair('a', a));
+        }
+        if (b > 0) {
+            maxHeap.offer(new Pair('b', b));
+        }
+        if (c > 0) {
+            maxHeap.offer(new Pair('c', c));
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        while (!maxHeap.isEmpty()) {
+            // Pop the most frequent character
+            Pair first = maxHeap.poll();
+
+            // If we already have two of this character at the end, we need to handle it carefully
+            if (result.length() >= 2 && result.charAt(result.length() - 1) == first.ch && result.charAt(result.length() - 2) == first.ch) {
+                if (maxHeap.isEmpty()) {
+                    break; // No other character left to append
+                }
+
+                // Take the second most frequent character
+                Pair second = maxHeap.poll();
+                result.append(second.ch);
+                second.count--;
+
+                // Reinsert the second character if there are still occurrences left
+                if (second.count > 0) {
+                    maxHeap.offer(second);
+                }
+
+                // Put the first character back to the heap
+                maxHeap.offer(first);
+            } else {
+                // Append the first character and decrease its count
+                result.append(first.ch);
+                first.count--;
+
+                // If there are still occurrences of the first character, reinsert it into the heap
+                if (first.count > 0) {
+                    maxHeap.offer(first);
+                }
+            }
+        }
+
+        return result.toString();
+    }
+
+    // Helper class to store character and count as a pair
+    class Pair {
+        char ch;
+        int count;
+
+        Pair(char ch, int count) {
+            this.ch = ch;
+            this.count = count;
+        }
+    }
+
+    // Main function to test the solution
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        System.out.println(solution.longestDiverseString(1, 1, 7)); // Example 1: Output should be something like "ccaccbcc"
+        System.out.println(solution.longestDiverseString(7, 1, 0)); // Example 2: Output should be "aabaa"
+        System.out.println(solution.longestDiverseString(0, 0, 0)); // Example 3: Output should be ""
+    }
+}
