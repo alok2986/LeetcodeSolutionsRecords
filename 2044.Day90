@@ -40,3 +40,50 @@ Constraints:
 
 1 <= nums.length <= 16
 1 <= nums[i] <= 105
+
+
+CODE:
+public class Solution {
+    public int countMaxOrSubsets(int[] nums) {
+        // Calculate the maximum OR value possible by any subset
+        int maxOr = 0;
+        for (int num : nums) {
+            maxOr |= num;
+        }
+        
+        // Count how many subsets can produce this maximum OR
+        return countSubsetsWithMaxOr(nums, maxOr);
+    }
+    
+    private int countSubsetsWithMaxOr(int[] nums, int targetOr) {
+        int count = 0;
+        int n = nums.length;
+        
+        // Iterate through all possible subsets using bitwise manipulation
+        for (int i = 0; i < (1 << n); i++) {
+            int currentOr = 0;
+            
+            // Calculate the OR for the current subset
+            for (int j = 0; j < n; j++) {
+                if ((i & (1 << j)) != 0) {
+                    currentOr |= nums[j];
+                }
+            }
+            
+            // If the OR of this subset equals the target OR, increase count
+            if (currentOr == targetOr) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+
+    // Main method for testing
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        System.out.println(solution.countMaxOrSubsets(new int[]{3, 1}));  // Output: 2
+        System.out.println(solution.countMaxOrSubsets(new int[]{2, 2, 2}));  // Output: 7
+        System.out.println(solution.countMaxOrSubsets(new int[]{3, 2, 1, 5}));  // Output: 6
+    }
+}
