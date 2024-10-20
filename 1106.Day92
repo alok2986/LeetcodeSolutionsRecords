@@ -42,3 +42,71 @@ Constraints:
 
 1 <= expression.length <= 2 * 104
 expression[i] is one following characters: '(', ')', '&', '|', '!', 't', 'f', and ','.
+
+CODE:
+import java.util.Stack;
+
+public class Solution {
+    public boolean parseBoolExpr(String expression) {
+        Stack<Character> stack = new Stack<>();
+
+        for (char ch : expression.toCharArray()) {
+            if (ch == ',' || ch == '(') {
+                // Skip commas and opening parenthesis
+                continue;
+            } else if (ch == 't' || ch == 'f' || ch == '!' || ch == '&' || ch == '|') {
+                stack.push(ch);
+            } else if (ch == ')') {
+                // We reached the end of a sub-expression, now evaluate
+                Stack<Character> subExpr = new Stack<>();
+                
+                // Pop the stack until we hit the operator
+                while (stack.peek() != '!' && stack.peek() != '&' && stack.peek() != '|') {
+                    subExpr.push(stack.pop());
+                }
+
+                // Pop the operator
+                char operator = stack.pop();
+                char result = evaluate(subExpr, operator);
+                
+                // Push the result back onto the stack
+                stack.push(result);
+            }
+        }
+        
+        // The final result will be the only value left in the stack
+        return stack.pop() == 't';
+    }
+    
+    // Helper function to evaluate a sub-expression
+    private char evaluate(Stack<Character> subExpr, char operator) {
+        if (operator == '!') {
+            // NOT operation, should only be one element in subExpr
+            return subExpr.pop() == 't' ? 'f' : 't';
+        } else if (operator == '&') {
+            // AND operation, return 't' if all are 't', else 'f'
+            while (!subExpr.isEmpty()) {
+                if (subExpr.pop() == 'f') {
+                    return 'f';
+                }
+            }
+            return 't';
+        } else { // operator == '|'
+            // OR operation, return 't' if any is 't', else 'f'
+            while (!subExpr.isEmpty()) {
+                if (subExpr.pop() == 't') {
+                    return 't';
+                }
+            }
+            return 'f';
+        }
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        System.out.println(solution.parseBoolExpr("&(|(f))")); // Output: false
+        System.out.println(solution.parseBoolExpr("|(f,f,f,t)")); // Output: true
+        System.out.println(solution.parseBoolExpr("!(&(f,t))")); // Output: true
+    }
+}
+
