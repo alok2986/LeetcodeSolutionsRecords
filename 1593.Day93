@@ -33,3 +33,48 @@ Constraints:
 1 <= s.length <= 16
 
 s contains only lower case English letters.
+
+
+CODE:
+import java.util.HashSet;
+
+public class Solution {
+    public int maxUniqueSplit(String s) {
+        return backtrack(s, 0, new HashSet<>());
+    }
+
+    // Helper function to perform backtracking
+    private int backtrack(String s, int start, HashSet<String> uniqueSubstrings) {
+        if (start == s.length()) {
+            // If we've reached the end of the string, return the number of unique substrings
+            return uniqueSubstrings.size();
+        }
+        
+        int maxUnique = 0;
+        
+        // Try every possible substring starting from 'start'
+        for (int end = start + 1; end <= s.length(); end++) {
+            String currentSubstring = s.substring(start, end);
+            
+            // If the current substring is not already in the set, proceed
+            if (!uniqueSubstrings.contains(currentSubstring)) {
+                uniqueSubstrings.add(currentSubstring);
+                
+                // Recursively check further splits and update the maximum
+                maxUnique = Math.max(maxUnique, backtrack(s, end, uniqueSubstrings));
+                
+                // Backtrack: remove the current substring from the set
+                uniqueSubstrings.remove(currentSubstring);
+            }
+        }
+        
+        return maxUnique;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        System.out.println(solution.maxUniqueSplit("ababccc")); // Output: 5
+        System.out.println(solution.maxUniqueSplit("aba")); // Output: 2
+        System.out.println(solution.maxUniqueSplit("aa")); // Output: 1
+    }
+}
