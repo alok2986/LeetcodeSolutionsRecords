@@ -40,3 +40,79 @@ Constraints:
 
 The number of nodes in the tree is in the range [1, 105].
 1 <= Node.val <= 104
+
+CODE:
+import java.util.*;
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode() {}
+    TreeNode(int val) { this.val = val; }
+    TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public TreeNode replaceValueInTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        
+        // Perform BFS to calculate the total level sum and update node values
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        root.val = 0; // Root has no cousins, so set its value to 0
+        
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            int levelSum = 0;
+            List<TreeNode> currentLevel = new ArrayList<>();
+            
+            // Traverse current level and calculate the level sum
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                currentLevel.add(node);
+                
+                if (node.left != null) {
+                    levelSum += node.left.val;
+                    queue.offer(node.left);
+                }
+                
+                if (node.right != null) {
+                    levelSum += node.right.val;
+                    queue.offer(node.right);
+                }
+            }
+            
+            // Update node values based on cousins
+            for (TreeNode node : currentLevel) {
+                int siblingSum = 0;
+                
+                if (node.left != null) {
+                    siblingSum += node.left.val;
+                }
+                
+                if (node.right != null) {
+                    siblingSum += node.right.val;
+                }
+                
+                // Set cousin sum for left child
+                if (node.left != null) {
+                    node.left.val = levelSum - siblingSum;
+                }
+                
+                // Set cousin sum for right child
+                if (node.right != null) {
+                    node.right.val = levelSum - siblingSum;
+                }
+            }
+        }
+        
+        return root;
+    }
+}
